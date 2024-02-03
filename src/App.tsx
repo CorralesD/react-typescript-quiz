@@ -1,6 +1,6 @@
 import { Box, Flex, Image } from '@chakra-ui/react';
-import ImgLogo from '../src/assets/logo.png';
-import bubbleImg from '../src//assets/bubble.png';
+import logoImg from '../src/assets/logo.png';
+import bubbleImg from '../src/assets/bubble.png';
 import '../global.css';
 import { useState } from 'react';
 import { SetQuestionQty } from '../src/features/SetQuestionQty';
@@ -13,18 +13,19 @@ enum Step {
   Score,
 }
 
-export const App = () => {
+export function App() {
   const [step, setStep] = useState<Step>(Step.SetQuestionQty);
 
   const header = (
     <Flex justify='center'>
-      <Image h='24' src={ImgLogo} />
+      <Image h='24' src={logoImg} />
     </Flex>
   );
+
   const renderScreenByStep = () => {
     switch (step) {
       case Step.SetQuestionQty:
-        return <SetQuestionQty />;
+        return <SetQuestionQty defaultValue={10} max={30} min={5} step={5} />;
       case Step.SetQuestionCat:
         return <></>;
       case Step.SetQuestionDif:
@@ -47,7 +48,7 @@ export const App = () => {
         right={-120}
         top={100}
       />
-      <Box>{renderScreenByStep()}</Box>
+      <Box mt={100}>{renderScreenByStep()}</Box>
     </Box>
   );
-};
+}
