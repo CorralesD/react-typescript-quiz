@@ -4,6 +4,8 @@ import bubbleImg from '../src/assets/bubble.png';
 import '../global.css';
 import { useState } from 'react';
 import { SetQuestionQty } from '../src/features/SetQuestionQty';
+import { FetchQuizParams, QuizDifficulty, QuizType } from './types/quiz-types';
+import { SetQuestionCat } from './features/SetQuestionCat';
 
 enum Step {
   SetQuestionQty,
@@ -15,7 +17,13 @@ enum Step {
 
 export function App() {
   const [step, setStep] = useState<Step>(Step.SetQuestionQty);
-
+  const [quizParams, setQuizParams] = useState<FetchQuizParams>({
+    amount: 0,
+    category: '',
+    difficulty: QuizDifficulty.Mixed,
+    type: QuizType.Multiple,
+  });
+  console.log(quizParams);
   const header = (
     <Flex justify='center'>
       <Image h='24' src={logoImg} />
@@ -25,9 +33,20 @@ export function App() {
   const renderScreenByStep = () => {
     switch (step) {
       case Step.SetQuestionQty:
-        return <SetQuestionQty defaultValue={10} max={30} min={5} step={5} />;
+        return (
+          <SetQuestionQty
+            onClickNext={(amount: number) => {
+              setQuizParams({ ...quizParams, amount });
+              setStep(Step.SetQuestionCat);
+            }}
+            defaultValue={10}
+            max={30}
+            min={5}
+            step={5}
+          />
+        );
       case Step.SetQuestionCat:
-        return <></>;
+        return <SetQuestionCat />;
       case Step.SetQuestionDif:
         return <></>;
       case Step.Play:
