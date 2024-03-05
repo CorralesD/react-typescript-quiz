@@ -5,6 +5,15 @@ export interface FetchQuizParams {
   type: QuizType;
 }
 
+export interface FetchQuizCategoriesResp {
+  trivia_categories: QuizCategory[];
+}
+
+export interface QuizCategory {
+  id: number;
+  name: string;
+}
+
 export enum QuizDifficulty {
   Mixed = '',
   Easy = 'easy',

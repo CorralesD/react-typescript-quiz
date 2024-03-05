@@ -23,7 +23,6 @@ export function App() {
     difficulty: QuizDifficulty.Mixed,
     type: QuizType.Multiple,
   });
-  console.log(quizParams);
   const header = (
     <Flex justify='center'>
       <Image h='24' src={logoImg} />
