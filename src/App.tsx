@@ -4,9 +4,15 @@ import bubbleImg from '../src/assets/bubble.png';
 import '../global.css';
 import { useEffect, useState } from 'react';
 import { SetQuestionQty } from '../src/features/SetQuestionQty';
-import { FetchQuizParams, QuizCategory, QuizDifficulty, QuizType } from './types/quiz-types';
+import {
+  FetchQuizParams,
+  QuizCategory,
+  QuizDifficulty,
+  QuizType,
+} from './types/quiz-types';
 import { SetQuestionCat } from './features/SetQuestionCat';
 import { QuizAPI } from './api/quiz-api';
+import { SetQuestionDif } from './features/SetQuestionDif';
 
 enum Step {
   SetQuestionQty,
@@ -24,11 +30,15 @@ export function App() {
     difficulty: QuizDifficulty.Mixed,
     type: QuizType.Multiple,
   });
+  console.log(quizParams);
   const [categories, setCategories] = useState<QuizCategory[]>([]);
 
   useEffect(() => {
     (async () => {
-      setCategories(await QuizAPI.fetchCategories());
+      setCategories([
+        { id: -1, name: 'Mixed' },
+        ...(await QuizAPI.fetchCategories()),
+      ]);
     })();
   }, []);
   const header = (
@@ -53,9 +63,20 @@ export function App() {
           />
         );
       case Step.SetQuestionCat:
-        return <SetQuestionCat categories={categories}/>;
+        return (
+          <SetQuestionCat
+            onClickNext={(category: string) => {
+              setQuizParams({
+                ...quizParams,
+                category: category === '-1' ? '' : category,
+              });
+              setStep(Step.SetQuestionDif);
+            }}
+            categories={categories}
+          />
+        );
       case Step.SetQuestionDif:
-        return <></>;
+        return <SetQuestionDif />;
       case Step.Play:
         return <></>;
       case Step.Score:

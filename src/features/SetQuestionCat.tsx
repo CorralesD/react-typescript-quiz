@@ -10,7 +10,10 @@ import {
   Radio,
 } from '@chakra-ui/react';
 
-export const SetQuestionCat = (props: { categories: QuizCategory[] }) => {
+export const SetQuestionCat = (props: {
+  categories: QuizCategory[];
+  onClickNext: (categoryId: string) => void;
+}) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(
     props.categories[0].id.toString()
   );
@@ -43,7 +46,7 @@ export const SetQuestionCat = (props: { categories: QuizCategory[] }) => {
       </RadioGroup>
 
       <Button
-        onClick={() => ''}
+        onClick={() => props.onClickNext(selectedCategoryId)}
         position={'absolute'}
         top={'80%'}
         right={'10%'}
