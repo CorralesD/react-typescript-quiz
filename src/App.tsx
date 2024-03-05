@@ -76,7 +76,17 @@ export function App() {
           />
         );
       case Step.SetQuestionDif:
-        return <SetQuestionDif />;
+        return (
+          <SetQuestionDif
+            onClickNext={(difficulty: QuizDifficulty) => {
+              setQuizParams({
+                ...quizParams,
+                difficulty,
+              });
+              setStep(Step.Play);
+            }}
+          />
+        );
       case Step.Play:
         return <></>;
       case Step.Score:
