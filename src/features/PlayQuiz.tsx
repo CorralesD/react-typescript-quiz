@@ -15,14 +15,19 @@ import invalidAnimation from '../assets/lottie/invalid.json';
 export const PlayQuiz = (props: { quiz: QuizItem[] }) => {
   const [currentQuizItemIndex, setCurrentQuizItemIndex] = useState<number>(0);
   const currentQuizItem: QuizItem = props.quiz[currentQuizItemIndex];
-  const availableAnswers: string[] = [
-    currentQuizItem.correct_answer,
-    ...currentQuizItem.incorrect_answers,
-  ];
+  const [availableAnswers, setAvailableAnswers] = useState<string[]>([]);
   const [answer, setAnswer] = useState<string>('');
   const [questionStatus, setQuestionStatus] = useState<
     'valid' | 'invalid' | 'unanswered'
   >('unanswered');
+  useEffect(() => {
+    setAvailableAnswers(
+      [
+        currentQuizItem.correct_answer,
+        ...currentQuizItem.incorrect_answers,
+      ].sort(() => Math.random() - 0.5)
+    );
+  }, [currentQuizItemIndex]);
   useEffect(() => {
     if (answer) {
       if (isValidAnswer(answer)) {
@@ -38,7 +43,16 @@ export const PlayQuiz = (props: { quiz: QuizItem[] }) => {
   const radioList = availableAnswers.map((availableAnswer: string) => {
     return (
       <Radio key={availableAnswer} value={availableAnswer}>
-        <Text dangerouslySetInnerHTML={{ __html: availableAnswer }} />
+        <Text
+          color={
+            questionStatus === 'unanswered'
+              ? 'black'
+              : isValidAnswer(availableAnswer)
+              ? 'green.400'
+              : 'red.400'
+          }
+          dangerouslySetInnerHTML={{ __html: availableAnswer }}
+        />
       </Radio>
     );
   });
@@ -50,7 +64,10 @@ export const PlayQuiz = (props: { quiz: QuizItem[] }) => {
         mb={20}
         dangerouslySetInnerHTML={{ __html: currentQuizItem.question }}
       />
-      <RadioGroup value={answer} onChange={setAnswer}>
+      <RadioGroup
+        value={answer}
+        onChange={questionStatus === 'unanswered' ? setAnswer : undefined}
+      >
         <SimpleGrid columns={2} spacing={4}>
           {radioList}
         </SimpleGrid>
