@@ -26,3 +26,17 @@ export enum QuizType {
   Multiple = 'multiple',
   Boolean = 'boolean',
 }
+
+export interface FetchQuizResp {
+  responze_code: number;
+  results: QuizItem[];
+}
+
+export interface QuizItem {
+  category: number;
+  type: QuizType;
+  difficulty: QuizDifficulty;
+  question: string;
+  correct_answer: string;
+  incorrect_answers: string;
+}
