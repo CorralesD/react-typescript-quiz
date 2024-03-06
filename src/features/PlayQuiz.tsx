@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { QuizItem } from '../types/quiz-types';
 import {
   Flex,
+  HStack,
   Heading,
   Radio,
   RadioGroup,
   SimpleGrid,
   Text,
+  Box,
 } from '@chakra-ui/react';
 import Lottie from 'lottie-react';
 import validAnimation from '../assets/lottie/valid.json';
@@ -20,6 +22,7 @@ export const PlayQuiz = (props: { quiz: QuizItem[] }) => {
   const [questionStatus, setQuestionStatus] = useState<
     'valid' | 'invalid' | 'unanswered'
   >('unanswered');
+  const [history, setHistory] = useState<boolean[]>([]);
   useEffect(() => {
     setAvailableAnswers(
       [
@@ -30,15 +33,40 @@ export const PlayQuiz = (props: { quiz: QuizItem[] }) => {
   }, [currentQuizItemIndex]);
   useEffect(() => {
     if (answer) {
-      if (isValidAnswer(answer)) {
+      const isValid = isValidAnswer(answer);
+      if (isValid) {
         setQuestionStatus('valid');
       } else {
         setQuestionStatus('invalid');
       }
+      setHistory([...history, isValid]);
     }
   }, [answer]);
   const isValidAnswer = (answer: string): boolean => {
     return answer == currentQuizItem.correct_answer;
+  };
+
+  const renderProgressBar = () => {
+    return (
+      <HStack>
+        {props.quiz.map((quizItem, i) => {
+          return (
+            <Box
+              key={i}
+              h={3}
+              w={25}
+              backgroundColor={
+                i >= currentQuizItemIndex
+                  ? 'gray.200'
+                  : history[i]
+                  ? 'green.300'
+                  : 'red.300'
+              }
+            />
+          );
+        })}
+      </HStack>
+    );
   };
   const radioList = availableAnswers.map((availableAnswer: string) => {
     return (
@@ -58,6 +86,7 @@ export const PlayQuiz = (props: { quiz: QuizItem[] }) => {
   });
   return (
     <Flex direction={'column'} alignItems={'center'} justify={'center'}>
+      {renderProgressBar()}
       <Heading
         fontSize={'3xl'}
         mt={100}
